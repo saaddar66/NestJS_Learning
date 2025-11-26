@@ -22,6 +22,6 @@ export class CreateUserDto {
   password!: string;
 
   @IsEnum(UserRole)
-  @Field()
+  @Field(()=>UserRole)
   role!: UserRole;
 }

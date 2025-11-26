@@ -3,10 +3,14 @@ import { InvoicesService } from './invoices.service';
 import { Invoice } from './entities/invoice.entity';
 import { CreateInvoiceDto } from './dto/create-invoice.dto';
 import { UpdateInvoiceDto } from './dto/update-invoice.dto';
+import { Inject } from '@nestjs/common'; // <--- Import Inject
+import { PubSub } from 'graphql-subscriptions'; // <--- Import PubSub type
 
 @Resolver(() => Invoice)
 export class InvoiceResolver {
-  constructor(private readonly invoicesService: InvoicesService) {}
+  constructor(private readonly invoicesService: InvoicesService,
+    @Inject('PUB_SUB') private readonly pubSub: PubSub,
+  ) {}
 
   @Mutation(() => Invoice)
   createInvoice(

@@ -10,6 +10,8 @@ import { Invoice } from './entities/invoice.entity';
 import { InvoiceItem } from './entities/invoice-item.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
+import { PubSub } from 'graphql-subscriptions'; // <--- Import this
+
 @Module({
   // Modules listed here are imported so that their exported providers 
   // (CustomersService, ProductsService) can be used within InvoicesModule.
@@ -19,7 +21,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     TypeOrmModule.forFeature([Invoice, InvoiceItem])
   ],
   controllers: [InvoicesController],
-  providers: [InvoicesService, InvoiceResolver]
-  //exports: [InvoicesService],
+  providers: [InvoicesService, InvoiceResolver,
+    {
+      provide: 'PUB_SUB',
+      useValue: new PubSub(),
+    },
+  ],
+  exports: [InvoicesService]
 })
 export class InvoicesModule {}

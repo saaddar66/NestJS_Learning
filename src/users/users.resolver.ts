@@ -1,4 +1,4 @@
-import { Resolver, Query, Mutation, Args, Int, ResolveField } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, Int, ResolveField, Parent } from '@nestjs/graphql';
 import { UsersService } from './users.service';
 import { CustomersService } from '../customers/customers.service';
 import { InvoicesService } from '../invoices/invoices.service';
@@ -10,7 +10,12 @@ import { Customer } from '../customers/entities/customer.entity';
 
 @Resolver(() => User)
 export class UserResolver {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    // INJECT MISSING SERVICES HERE
+    private readonly customersService: CustomersService,
+    private readonly invoicesService: InvoicesService,
+  ) {}
 
   @Mutation(() => User)
   createUser(@Args('data') data: CreateUserDto) {
@@ -41,16 +46,17 @@ export class UserResolver {
     return true;
   }
 
-  // 3. Add ResolveField for Customers
+  // --- FIELD RESOLVERS ---
+
   @ResolveField('customers', () => [Customer])
-  async getCustomers(@Parent() user: User) {
-    // This only runs if the client queries: { user { customers { ... } } }
-    return this.CustomersService.findByUserId(user.id);
+  async getCustomers(@Parent() user: User) { // Fixed @Parent()
+    // Use the injected instance (lowercase c), not the class
+    return this.customersService.findByUserId(user.id);
   }
 
-  // 4. Add ResolveField for Invoices
   @ResolveField('invoices', () => [Invoice])
-  async getInvoices(@Parent() user: User) {
-    return this.InvoicesService.findByUserId(user.id);
+  async getInvoices(@Parent() user: User) { // Fixed @Parent()
+    // Use the injected instance (lowercase i), not the class
+    return this.invoicesService.findByUserId(user.id);
   }
 }

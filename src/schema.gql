@@ -1,0 +1,154 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+input CreateCustomerDto {
+  address: String!
+  email: String!
+  name: String!
+  phoneNo: String!
+  userId: Int!
+}
+
+input CreateInvoiceDto {
+  customerId: Int!
+  invoiceNumber: String!
+  lineItems: [InvoiceLineItemDto!]!
+  status: String!
+  userId: Int!
+}
+
+input CreateProductDto {
+  description: String
+  name: String!
+  price: Float!
+  stockQuantity: Int!
+  userId: Int!
+}
+
+input CreateUserDto {
+  email: String!
+  name: String!
+  password: String!
+  role: UserRole!
+}
+
+type Customer {
+  address: String!
+  email: String!
+  id: Int!
+  invoices: [Invoice!]
+  name: String!
+  phoneNo: String!
+  user: User
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type Invoice {
+  amount: Float
+  createdAt: DateTime!
+  customer: Customer
+  id: Int!
+  invoiceNumber: String!
+  items: [InvoiceItem!]
+  status: String!
+  user: User
+}
+
+type InvoiceItem {
+  id: Int!
+  invoice: Invoice
+  product: Product
+  quantity: Int!
+  total: Float!
+  unitPrice: Float!
+}
+
+input InvoiceLineItemDto {
+  productId: Int!
+  quantity: Int!
+}
+
+type Mutation {
+  createCustomer(data: CreateCustomerDto!): Customer!
+  createInvoice(data: CreateInvoiceDto!): Invoice!
+  createProduct(data: CreateProductDto!): Product!
+  createUser(data: CreateUserDto!): User!
+  deleteInvoice(id: Int!): Boolean!
+  deleteProduct(id: Int!): Boolean!
+  removeCustomer(id: Int!): Boolean!
+  removeUser(id: Int!): Boolean!
+  updateCustomer(data: UpdateCustomerDto!, id: Int!): Customer!
+  updateInvoice(data: UpdateInvoiceDto!, id: Int!): Invoice!
+  updateProduct(data: UpdateProductDto!, id: Int!): Product!
+  updateUser(data: UpdateUserDto!, id: Int!): User!
+}
+
+type Product {
+  description: String
+  id: Int!
+  invoiceItems: [InvoiceItem!]
+  name: String!
+  price: Float!
+  stockQuantity: Int
+  user: User
+}
+
+type Query {
+  customer(id: Int!): Customer!
+  customers: [Customer!]!
+  invoice(id: Int!): Invoice!
+  invoices: [Invoice!]!
+  product(id: Int!): Product!
+  products: [Product!]!
+  user(id: Int!): User!
+  users: [User!]!
+}
+
+input UpdateCustomerDto {
+  address: String
+  email: String
+  name: String
+  phoneNo: String
+  userId: Int
+}
+
+input UpdateInvoiceDto {
+  invoiceNumber: String
+  status: String
+}
+
+input UpdateProductDto {
+  description: String
+  name: String
+  price: Float
+  stockQuantity: Int
+  userId: Int
+}
+
+input UpdateUserDto {
+  email: String
+  name: String
+  password: String
+  role: UserRole
+}
+
+type User {
+  customers: [Customer!]!
+  email: String!
+  id: Int!
+  invoices: [Invoice!]!
+  name: String!
+  products: [Product!]
+  role: UserRole!
+}
+
+enum UserRole {
+  ADMIN
+  LIBRARIAN
+  MEMBER
+}
